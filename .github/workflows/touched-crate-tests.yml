@@ -1,0 +1,43 @@
+name: Reviewed-head touched-crate tests
+on:
+  push:
+    branches: [validation/touched-crates]
+    paths: [.github/workflows/touched-crate-tests.yml]
+permissions:
+  contents: read
+concurrency:
+  group: reviewed-head-touched-crates
+  cancel-in-progress: false
+jobs:
+  crate-tests:
+    name: ${{ matrix.crate }} at reviewed head
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - crate: xerj-engine
+            sha: 1d3baa411baa422174ed1f434c4a6f27bcd38553
+          - crate: xerj-api
+            sha: 34d6c06276f54ef13db92dde86ee6d1fed87d09f
+    steps:
+      - name: Check out exact reviewed solution
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ matrix.sha }}
+          persist-credentials: false
+      - name: Verify exact solution head
+        env:
+          EXPECTED_SHA: ${{ matrix.sha }}
+        run: test "$(git rev-parse HEAD)" = "$EXPECTED_SHA"
+      - name: Install pinned Rust
+        uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
+      - name: Run touched-crate tests
+        working-directory: engine
+        env:
+          TEST_CRATE: ${{ matrix.crate }}
+          CARGO_BUILD_JOBS: 2
+          XERJ_DISABLE_FEEDBACK: "true"
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+        run: cargo test --locked --profile ci-test -p "$TEST_CRATE" -- --test-threads=2
