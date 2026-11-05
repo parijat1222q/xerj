@@ -18,9 +18,9 @@ jobs:
       matrix:
         include:
           - crate: xerj-engine
-            sha: 1d8d8e12023c3d7ed6e7c93441454440e4df3ecb
+            sha: 65488135ed9e8032111ca74866bcabe01717da78
           - crate: xerj-api
-            sha: 1d8d8e12023c3d7ed6e7c93441454440e4df3ecb
+            sha: 65488135ed9e8032111ca74866bcabe01717da78
     steps:
       - name: Check out exact reviewed solution
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -43,17 +43,17 @@ jobs:
         run: cargo test --locked --profile ci-test -p "$TEST_CRATE" -- --test-threads=2
 
   candidate-gates:
-    name: Reviewed composite release lint and real-server YAML
+    name: Reviewed leaf terms release lint and real-server YAML
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
       - name: Check out exact reviewed solution
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: 1d8d8e12023c3d7ed6e7c93441454440e4df3ecb
+          ref: 65488135ed9e8032111ca74866bcabe01717da78
           persist-credentials: false
       - name: Verify exact solution head
-        run: test "$(git rev-parse HEAD)" = "1d8d8e12023c3d7ed6e7c93441454440e4df3ecb"
+        run: test "$(git rev-parse HEAD)" = "65488135ed9e8032111ca74866bcabe01717da78"
       - name: Install pinned Rust
         uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
         with:
