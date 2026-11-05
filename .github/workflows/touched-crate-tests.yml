@@ -18,9 +18,9 @@ jobs:
       matrix:
         include:
           - crate: xerj-engine
-            sha: 65488135ed9e8032111ca74866bcabe01717da78
+            sha: a88767ad68634a638b3e659e115ad2f7d8d902a2
           - crate: xerj-api
-            sha: 65488135ed9e8032111ca74866bcabe01717da78
+            sha: a88767ad68634a638b3e659e115ad2f7d8d902a2
     steps:
       - name: Check out exact reviewed solution
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -50,10 +50,10 @@ jobs:
       - name: Check out exact reviewed solution
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: 65488135ed9e8032111ca74866bcabe01717da78
+          ref: a88767ad68634a638b3e659e115ad2f7d8d902a2
           persist-credentials: false
       - name: Verify exact solution head
-        run: test "$(git rev-parse HEAD)" = "65488135ed9e8032111ca74866bcabe01717da78"
+        run: test "$(git rev-parse HEAD)" = "a88767ad68634a638b3e659e115ad2f7d8d902a2"
       - name: Install pinned Rust
         uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
         with:
