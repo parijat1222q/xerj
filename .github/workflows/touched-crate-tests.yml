@@ -10,7 +10,6 @@ concurrency:
   cancel-in-progress: false
 jobs:
   crate-tests:
-    if: false
     name: ${{ matrix.crate }} at reviewed head
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -19,9 +18,9 @@ jobs:
       matrix:
         include:
           - crate: xerj-engine
-            sha: 2a5680ecc4618b65a1e41326c0696f567df8f309
+            sha: ff1da540ccdff576ed5d8fa748108b8dc28240bf
           - crate: xerj-api
-            sha: 2a5680ecc4618b65a1e41326c0696f567df8f309
+            sha: ff1da540ccdff576ed5d8fa748108b8dc28240bf
     steps:
       - name: Check out exact reviewed solution
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -51,10 +50,10 @@ jobs:
       - name: Check out exact reviewed solution
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: 2a5680ecc4618b65a1e41326c0696f567df8f309
+          ref: ff1da540ccdff576ed5d8fa748108b8dc28240bf
           persist-credentials: false
       - name: Verify exact solution head
-        run: test "$(git rev-parse HEAD)" = "2a5680ecc4618b65a1e41326c0696f567df8f309"
+        run: test "$(git rev-parse HEAD)" = "ff1da540ccdff576ed5d8fa748108b8dc28240bf"
       - name: Install pinned Rust
         uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
         with:
@@ -64,7 +63,6 @@ jobs:
         run: cargo fmt --all -- --check
       - name: Strict touched-crate lint
         id: strict-lint
-        continue-on-error: true
         working-directory: engine
         env:
           CARGO_BUILD_JOBS: 2
