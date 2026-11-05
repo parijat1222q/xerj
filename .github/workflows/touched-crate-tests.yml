@@ -18,9 +18,9 @@ jobs:
       matrix:
         include:
           - crate: xerj-engine
-            sha: ff1da540ccdff576ed5d8fa748108b8dc28240bf
+            sha: 051b3b7ec91d708b0f9dd60a4f5ba8e75e626ee6
           - crate: xerj-api
-            sha: ff1da540ccdff576ed5d8fa748108b8dc28240bf
+            sha: 051b3b7ec91d708b0f9dd60a4f5ba8e75e626ee6
     steps:
       - name: Check out exact reviewed solution
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -43,17 +43,17 @@ jobs:
         run: cargo test --locked --profile ci-test -p "$TEST_CRATE" -- --test-threads=2
 
   candidate-gates:
-    name: Reviewed stats release lint and real-server YAML
+    name: Reviewed composite release lint and real-server YAML
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
       - name: Check out exact reviewed solution
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: ff1da540ccdff576ed5d8fa748108b8dc28240bf
+          ref: 051b3b7ec91d708b0f9dd60a4f5ba8e75e626ee6
           persist-credentials: false
       - name: Verify exact solution head
-        run: test "$(git rev-parse HEAD)" = "ff1da540ccdff576ed5d8fa748108b8dc28240bf"
+        run: test "$(git rev-parse HEAD)" = "051b3b7ec91d708b0f9dd60a4f5ba8e75e626ee6"
       - name: Install pinned Rust
         uses: dtolnay/rust-toolchain@032958afbdc797a9164d3bc0b56325c1308924a5
         with:
@@ -79,13 +79,13 @@ jobs:
         run: |
           set -euo pipefail
           DATA="$(mktemp -d)"
-          ./target/release/xerj --insecure --bind 127.0.0.1 --port 9200 --data-dir "$DATA" --embed-mode lexical --disable-feedback > /tmp/stats-server.log 2>&1 &
+          ./target/release/xerj --insecure --bind 127.0.0.1 --port 9200 --data-dir "$DATA" --embed-mode lexical --disable-feedback > /tmp/composite-server.log 2>&1 &
           PID=$!
           trap 'kill "$PID" 2>/dev/null || true' EXIT
           ready=false
           for _ in $(seq 1 120); do
             if curl -fsS -m1 localhost:9200/_cluster/health >/dev/null; then ready=true; break; fi
-            kill -0 "$PID" || { cat /tmp/stats-server.log; exit 1; }
+            kill -0 "$PID" || { cat /tmp/composite-server.log; exit 1; }
             sleep 0.5
           done
           test "$ready" = true
